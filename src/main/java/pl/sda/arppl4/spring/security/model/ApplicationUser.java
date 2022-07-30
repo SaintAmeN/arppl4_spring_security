@@ -31,7 +31,7 @@ public class ApplicationUser implements UserDetails {
     private boolean credentialsNonExpired = true;
     private boolean enabled = true;
 
-    @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @EqualsAndHashCode.Exclude
     private Set<ApplicationUserRole> roles;
 

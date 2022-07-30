@@ -13,4 +13,5 @@ public interface SecurityConstants {
     String HEADER_EXPIRATION = "Expires_at";
 
     String HEADER_ROLES = "App_roles";
+    String ROLES_SEPARATOR = ",";
 }

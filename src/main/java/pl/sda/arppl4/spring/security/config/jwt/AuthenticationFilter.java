@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import pl.sda.arppl4.spring.security.model.ApplicationUser;
+import pl.sda.arppl4.spring.security.model.ApplicationUserRole;
 import pl.sda.arppl4.spring.security.model.dto.AuthenticationRequest;
 
 import javax.servlet.FilterChain;
@@ -21,6 +22,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 /**
  * @author Paweł Recław, AmeN
@@ -76,18 +78,25 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         }
 
         String token = Jwts.builder()
-                .setSubject(applicationUser.getUsername())
-                .setExpiration(Timestamp.valueOf(LocalDateTime.now().plusDays(10))) // TODO: zamienić 10 na stałą
-                .signWith(SignatureAlgorithm.HS512, SecurityConstants.APPLICATION_KEY)
                 .setClaims(new HashMap<>() {
                     {
                         put("app_name", SecurityConstants.APPLICATION_NAME);
-                        put("roles", applicationUser.getRoles());
+                        put("roles", applicationUser
+                                .getRoles()
+                                .stream()
+                                .map(ApplicationUserRole::getName)
+                                .collect(Collectors.joining(","))
+                        );
                     }
-                }).compact();
+                })
+                .setSubject(applicationUser.getUsername())
+                .setExpiration(Timestamp.valueOf(LocalDateTime.now().plusDays(10)))
+                .signWith(SignatureAlgorithm.HS512, SecurityConstants.APPLICATION_KEY)
+                .compact();
 
         response.addHeader(SecurityConstants.HEADER_EXPIRATION, String.valueOf(Timestamp.valueOf(LocalDateTime.now().plusDays(10))));
-        response.addHeader(SecurityConstants.HEADER_AUTH,SecurityConstants.HEADER_AUTH_BEARER + token );
-        response.addHeader(SecurityConstants.HEADER_ROLES,String.valueOf(applicationUser.getRoles()));
+        response.addHeader(SecurityConstants.HEADER_AUTH, SecurityConstants.HEADER_AUTH_BEARER + token);
+        response.addHeader(SecurityConstants.HEADER_ROLES, String.valueOf(applicationUser.getRoles()));
+        response.setStatus(HttpStatus.I_AM_A_TEAPOT.value());
     }
 }
