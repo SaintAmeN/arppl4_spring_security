@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import pl.sda.arppl4.spring.security.config.jwt.AuthenticationFilter;
 import pl.sda.arppl4.spring.security.service.ApplicationUserService;
 
 /**
@@ -42,6 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .anyRequest().authenticated()
                 // i... (cofamy się do konfiguratora HttpSecurity, bo przed chwilą byliśmy w 'authorizeRequests()')
                 .and()
+                .addFilter(new AuthenticationFilter(authenticationManager()))
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 // domyślne logowanie tokenowe (TODO: zastąpimy je)
