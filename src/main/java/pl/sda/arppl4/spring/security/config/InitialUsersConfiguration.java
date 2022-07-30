@@ -1,9 +1,6 @@
 package pl.sda.arppl4.spring.security.config;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,6 +12,7 @@ import java.util.List;
  * @created 28.07.2022
  */
 @Getter
+@Setter
 @Configuration
 @ConfigurationProperties(prefix = "default")
 public class InitialUsersConfiguration {

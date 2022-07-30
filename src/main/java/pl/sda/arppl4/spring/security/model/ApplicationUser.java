@@ -15,7 +15,7 @@ import java.util.Set;
  */
 @Data
 @Entity
-@Builder
+@Builder()
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApplicationUser implements UserDetails {
@@ -26,10 +26,10 @@ public class ApplicationUser implements UserDetails {
     private String password;
     private String username;
 
-    private boolean accountNonExpired;
-    private boolean accountNonLocked;
-    private boolean credentialsNonExpired;
-    private boolean enabled;
+    private boolean accountNonExpired = true;
+    private boolean accountNonLocked = true;
+    private boolean credentialsNonExpired = true;
+    private boolean enabled = true;
 
     @ManyToMany(mappedBy = "users")
     @EqualsAndHashCode.Exclude

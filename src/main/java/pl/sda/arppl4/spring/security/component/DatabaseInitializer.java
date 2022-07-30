@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import pl.sda.arppl4.spring.security.config.InitialUsersConfiguration;
 import pl.sda.arppl4.spring.security.model.ApplicationUser;
@@ -33,6 +35,9 @@ public class DatabaseInitializer {
     // inicjalna konfiguracja bazy danych (związana z użytkownikami)
     private final InitialUsersConfiguration initialUsersConfiguration;
 
+    // Encryptor/Encoder
+    private final PasswordEncoder bCryptPasswordEncoder;
+
     @EventListener(ContextRefreshedEvent.class)
     public void initializeDatabase() {
         createRoles();
@@ -56,8 +61,12 @@ public class DatabaseInitializer {
 
             ApplicationUser applicationUser = ApplicationUser.builder()
                     .username(userInfo.getUsername())
-                    .password(userInfo.getPassword())
+                    .password(bCryptPasswordEncoder.encode(userInfo.getPassword()))
                     .roles(applicationUserRoleSet)
+                    .accountNonExpired(true)
+                    .accountNonLocked(true)
+                    .credentialsNonExpired(true)
+                    .enabled(true)
                     .build();
 
             applicationUserRepository.save(applicationUser);
