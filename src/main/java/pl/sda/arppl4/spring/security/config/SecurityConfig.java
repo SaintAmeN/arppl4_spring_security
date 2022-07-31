@@ -36,12 +36,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors().disable()
                 // dalej konfigurujemy autoryzację requestów
                 .authorizeRequests()
-                    // przepuść każdy request metodą GET na /api/test
                     .antMatchers(HttpMethod.GET, "/api/test").permitAll()
-                    // przepuść każdy request dowolną metodą na /api/test/** ('**' oznacza podstrony)
                     .antMatchers("/api/public/**").permitAll()
-                    // pozostałe, wszystkie requesty muszą być authenticated (zalogowane)
-                    .anyRequest().authenticated()
+                    .antMatchers("/api/private/**").authenticated()
+                    .antMatchers("/api/test/authorized").hasRole("ADMIN")
+                .anyRequest().authenticated()
                 // i... (cofamy się do konfiguratora HttpSecurity, bo przed chwilą byliśmy w 'authorizeRequests()')
                 .and()
                 .addFilter(new AuthenticationFilter(authenticationManager()))

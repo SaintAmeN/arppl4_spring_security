@@ -34,7 +34,7 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
                                     FilterChain chain) throws IOException, ServletException {
         String header = request.getHeader(SecurityConstants.HEADER_AUTH);
 
-        if (header.startsWith(SecurityConstants.HEADER_AUTH_BEARER)) {
+        if (header != null && header.startsWith(SecurityConstants.HEADER_AUTH_BEARER)) {
             String[] headerParts = header.split(":");
             if (headerParts.length == 2) {
                 String headerToken = headerParts[1];
@@ -60,7 +60,7 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
                 null,
                 Arrays.asList(roles.split(SecurityConstants.ROLES_SEPARATOR))
                         .stream()
-                        .map(s -> new SimpleGrantedAuthority(s))
+                        .map(s -> new SimpleGrantedAuthority("ROLE_" + s))
                         .collect(Collectors.toList())
         );
     }

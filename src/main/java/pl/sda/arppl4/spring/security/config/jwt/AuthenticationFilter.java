@@ -77,6 +77,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
             throw new RuntimeException("Wrong type!");
         }
 
+        // JSON Web Token
         String token = Jwts.builder()
                 .setClaims(new HashMap<>() {
                     {
